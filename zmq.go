@@ -138,7 +138,11 @@ func (e zmqErrno) String() string {
 
 // int zmq_errno ();
 func errno() os.Error {
-	return zmqErrno(C.zmq_errno())
+	e := C.zmq_errno()
+	if int(e) >= int(EFSM) {
+		return zmqErrno(e)
+	}
+	return os.Errno(e)
 }
 
 /*
